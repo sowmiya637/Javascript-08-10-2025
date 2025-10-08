@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Promises Full Example</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h2>Promise Example: Fetch Users & Posts</h2>
+  <button id="loadBtn">Load Data</button>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+    const btn = document.getElementById("loadBtn");
+
+    btn.addEventListener("click", () => {
+      output.textContent = " Fetching data...\n";
+
+      //  Two separate API Promises
+      const usersPromise = fetch("https://jsonplaceholder.typicode.com/users") //it will give users data
+        .then(response => response.json()); // convert JSON → JS object
+
+      const postsPromise = fetch("https://jsonplaceholder.typicode.com/posts") //it wil give post data
+        .then(response => response.json());
+
+      //  Use Promise.all → wait for both APIs to complete
+      Promise.all([usersPromise, postsPromise])
+        .then(([users, posts]) => {
+          output.textContent += ` Users fetched: ${users.length}\n`;  //total number of user fetched
+          output.textContent += ` Posts fetched: ${posts.length}\n`;  //total number of post fetched
+
+          //  Chaining example — filter user & show post count
+          return users.map(u => ({
+            name: u.name,
+            postCount: posts.filter(p => p.userId === u.id).length
+          }));
+        })
+        .then(userPostData => {  //.then() executes after the previous Promise resolves,userPostData → result returned from previous .then()
+          output.textContent += "\n User Post Count:\n";
+          userPostData.forEach(u => {
+            output.textContent += `${u.name} → ${u.postCount} posts\n`;
+          });
+        })
+        .catch(error => {
+          //  Handle any error
+          output.textContent = ` Error: ${error}`;
+        })
+        .finally(() => {
+          //  Runs always
+          output.textContent += "\n Operation Completed!\n";
+        });
+
+      // Promise.race → fastest API
+      Promise.race([usersPromise, postsPromise])
+        .then(fastest => {
+          output.textContent += "\n Fastest API responded first!\n";
+        });
+    });
+  </script>
+</body>
+</html>

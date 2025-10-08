@@ -1,0 +1,144 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Async/Await Crypto Dashboard</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h2>Crypto Dashboard</h2>
+  <button id="loadBtn">Load Crypto Data</button>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+    const btn = document.getElementById("loadBtn");
+
+    // Simulated APIs
+    async function fetchPrice(coin) {
+      // Simulate random network delay
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() > 0.1) resolve(`${coin} price: $${(Math.random() * 50000).toFixed(2)}`);
+          else reject(`${coin}: Failed to fetch price`);
+        }, Math.random() * 2000);
+      });
+    }
+
+    async function fetchNews(coin) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() > 0.1) resolve([`${coin} hits new high!`, `${coin} trading volume up!`]);
+          else reject(`${coin}: Failed to fetch news`);
+        }, Math.random() * 2500);
+      });
+    }
+
+    // Main async function
+    async function loadCryptoDashboard() {
+      const coins = ["BTC", "ETH", "SOL"];
+      output.textContent = "⏳ Loading crypto dashboard...\n";
+
+      try {
+        // 🔹 Concurrency: fetch all prices & news together
+        const pricePromises = coins.map(c => fetchPrice(c));
+        const newsPromises = coins.map(c => fetchNews(c));
+
+        const [prices, news] = await Promise.all([
+          Promise.all(pricePromises), 
+          Promise.all(newsPromises)
+        ]);
+
+        // Display prices
+        output.textContent += "\n Prices:\n";
+        prices.forEach(p => output.textContent += p + "\n");
+
+        // Display news
+        output.textContent += "\n Latest News:\n";
+        news.flat().forEach(n => output.textContent += n + "\n");
+
+      } catch (error) {
+        output.textContent += ` Error: ${error}\n`;
+      } finally {
+        output.textContent += "\n Dashboard update completed!\n";
+      }
+
+      //  Race example: see which coin price fetched first
+      try {
+        const fastest = await Promise.race(coins.map(c => fetchPrice(c)));
+        output.textContent += `\n Fastest price fetched: ${fastest}\n`;
+      } catch {
+        output.textContent += "\n Fastest price fetch failed\n";
+      }
+    }
+
+    btn.addEventListener("click", loadCryptoDashboard);
+  </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Async/Await Food App</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h2>Food Delivery Dashboard</h2>
+  <button id="loadBtn">Load Food Data</button>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+    const btn = document.getElementById("loadBtn");
+
+    // Simulated async API functions
+    async function fetchMenu(restaurant) {
+      return new Promise((resolve, reject) => {  //manually create a promise
+        setTimeout(() => {
+          if (Math.random() > 0.1) resolve(`${restaurant} menu: Pizza, Burger, Pasta`);
+          else reject(`${restaurant} menu failed to load`);
+        }, 1000 + Math.random() * 1000);
+      });
+    }
+
+    async function fetchRestaurantDetails(restaurant) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() > 0.1) resolve(`${restaurant} is open, rating 4.5`);
+          else reject(`${restaurant} details failed`);
+        }, 500 + Math.random() * 1000);  //0.5–1.5 seconds random delay after delay js check whether it is success/reject
+      });
+    }
+
+    // Main async function
+    async function loadFoodDashboard() {
+      const restaurants = ["Domino's", "McDonald's"];
+      output.textContent = " Loading food data...\n";
+
+      try {
+        // Concurrency: fetch menus and details in parallel
+        const menuPromises = restaurants.map(r => fetchMenu(r));
+        const detailPromises = restaurants.map(r => fetchRestaurantDetails(r));
+
+        const [menus, details] = await Promise.all([
+          Promise.all(menuPromises),
+          Promise.all(detailPromises)
+        ]);
+
+        output.textContent += "\n Menus:\n";
+        menus.forEach(m => output.textContent += m + "\n");
+
+        output.textContent += "\n Restaurant Details:\n";
+        details.forEach(d => output.textContent += d + "\n");
+
+      } catch (error) {
+        output.textContent += ` Error: ${error}\n`;
+      } finally {
+        output.textContent += "\n Food dashboard loaded!\n";
+      }
+    }
+
+    btn.addEventListener("click", loadFoodDashboard);
+  </script>
+</body>
+</html>
+

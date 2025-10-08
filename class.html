@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bank Account System</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h2>Bank Account Management</h2>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+
+    // Base class
+    class BankAccount {
+      constructor(owner, balance) {  //constructor → special method, runs automatically when new object is created
+        this.owner = owner; //it will seet own data to object same as balance
+        this.balance = balance;
+      }
+
+      deposit(amount) {  //method to add money to account
+        this.balance += amount;  //it will add amount to the current balance
+        output.textContent += `${this.owner} deposited $${amount}. New balance: $${this.balance}\n`;
+      }
+        // to withdraw money
+      withdraw(amount) {
+        if (amount > this.balance) {
+          output.textContent += `${this.owner} insufficient funds!\n`;
+        } else {
+          this.balance -= amount;
+          output.textContent += `${this.owner} withdrew $${amount}. New balance: $${this.balance}\n`;
+        }
+      }
+
+      getBalance() {    //display the current balance
+        output.textContent += `${this.owner}'s balance: $${this.balance}\n`;
+      }
+
+      // Static method(belongs to the class, not the object)
+      static bankInfo() {
+        return " Welcome to JS Bank!";
+      }
+    }
+
+    // Child class - SavingsAccount inherits BankAccount
+    class SavingsAccount extends BankAccount {
+      constructor(owner, balance, interestRate) {
+        super(owner, balance); // call parent constructor
+        this.interestRate = interestRate;
+      }
+
+      addInterest() {
+        const interest = this.balance * this.interestRate / 100;
+        this.balance += interest;
+        output.textContent += `${this.owner} earned $${interest.toFixed(2)} interest. New balance: $${this.balance.toFixed(2)}\n`;
+      }
+    }
+
+    // Child class - CheckingAccount inherits BankAccount
+    class CheckingAccount extends BankAccount {
+      constructor(owner, balance, overdraftLimit) {
+        super(owner, balance);
+        this.overdraftLimit = overdraftLimit;
+      }
+
+      withdraw(amount) {
+        if (amount > this.balance + this.overdraftLimit) {
+          output.textContent += `${this.owner} exceeds overdraft limit!\n`;
+        } else {
+          this.balance -= amount;
+          output.textContent += `${this.owner} withdrew $${amount}. New balance: $${this.balance}\n`;
+        }
+      }
+    }
+
+    // Using classes
+    output.textContent += BankAccount.bankInfo() + "\n\n"; //call static method from BankAccount class
+
+    const sa = new SavingsAccount("Alice", 1000, 5);  //create new object
+    const ca = new CheckingAccount("Bob", 500, 200);
+
+    sa.deposit(500);  //sa → SavingsAccount object (Alice, balance 1000)
+    sa.addInterest();  
+    sa.withdraw(200);  //"Alice withdrew $200. New balance: $1375"
+    sa.getBalance();
+
+    ca.withdraw(600); // allowed due to overdraft
+    ca.withdraw(200); // exceeds overdraft
+    ca.getBalance();
+  </script>
+</body>
+</html>
