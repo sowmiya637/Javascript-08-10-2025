@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>This Keyword Demo - Food Delivery App </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff7e6;
+      padding: 30px;
+      text-align: center;
+    }
+    h2 {
+      color: #ff6600;
+    }
+    button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #cc5200;
+    }
+    pre {
+      background: #f2f2f2;
+      padding: 10px;
+      text-align: left;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2> Food Delivery App — "this" Keyword Demo</h2>
+  <button id="globalBtn">Check Global this</button>
+  <button id="objectBtn">Show Restaurant Details</button>
+  <button id="functionBtn">Place Order</button>
+  <button id="classBtn">Start Delivery</button>
+  <button id="appBtn">Start App</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+
+    //  1. Global Context
+    document.getElementById("globalBtn").addEventListener("click", function() {
+      output.innerHTML += `Global this === window? ${this === window}\n`;
+    });
+
+    //  2. Object Context
+    const restaurant = {
+      name: "Foodie Hub",
+      location: "Chennai",
+      showDetails() {
+        output.innerHTML += `Welcome to ${this.name} located in ${this.location}\n`;
+      }
+    };
+
+    document.getElementById("objectBtn").addEventListener("click", function() {
+      restaurant.showDetails();
+    });
+
+    //  3. Function Context + call/apply/bind
+    function orderFood(foodItem) {
+      output.innerHTML += `${this.customerName} ordered ${foodItem}\n`;
+    }
+
+    const customer = { customerName: "Sowmiya " };
+
+    document.getElementById("functionBtn").addEventListener("click", function() {
+      orderFood.call(customer, "Pizza");
+      orderFood.apply(customer, ["Burger"]);
+      const boundOrder = orderFood.bind(customer, "Pasta");
+      boundOrder();
+    });
+
+    //  4. Class Context + Arrow Method
+    class Delivery {
+      constructor(riderName) {
+        this.riderName = riderName;
+      }
+
+      startDelivery(orderId) {
+        output.innerHTML += `${this.riderName} started delivery for Order #${orderId}\n`;
+      }
+
+      notify = () => {
+        output.innerHTML += `${this.riderName} is en route!\n`;
+      };
+    }
+
+    const deliveryGuy = new Delivery("Arun ");
+    document.getElementById("classBtn").addEventListener("click", function() {
+      deliveryGuy.startDelivery(101);
+      deliveryGuy.notify();
+    });
+
+    //  5. Arrow Function + setTimeout
+    const app = {
+      name: "Zesto Eats",
+      startApp: function() {
+        output.innerHTML += `${this.name} app initializing...\n`;
+        setTimeout(() => {
+          output.innerHTML += `${this.name} app is live now!\n`;
+        }, 1000);
+      },
+    };
+
+    document.getElementById("appBtn").addEventListener("click", function() {
+      app.startApp();
+    });
+  </script>
+
+</body>
+</html>
